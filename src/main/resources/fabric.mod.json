@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "minddomain",
+  "version": "${version}",
+  "name": "MindDomain",
+  "description": "存在于心灵中的私人维度空间",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/minddomain/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "org.mo.minddomain.client.MinddomainClient"
+    ],
+    "main": [
+      "org.mo.minddomain.Minddomain"
+    ]
+  },
+  "mixins": [
+    "minddomain.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-language-kotlin": ">=${kotlin_loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

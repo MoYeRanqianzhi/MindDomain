@@ -1,0 +1,38 @@
+{
+  "block.minddomain.white_barrier": "White Barrier",
+
+  "item.minddomain.space_ball": "Space Ball",
+  "item.minddomain.space_ball.sized": "%d×%d×%d Space Ball",
+  "item.minddomain.space_ball.named": "%s's Space",
+
+  "tooltip.minddomain.space_size": "Size: %d×%d×%d",
+  "tooltip.minddomain.original_owner": "Original Owner: %s",
+  "tooltip.minddomain.has_existing_space": "Contains existing constructions",
+
+  "message.minddomain.already_has_space": "You already have a space!",
+  "message.minddomain.no_space": "You don't have a space! Use a Space Ball first.",
+  "message.minddomain.already_in_space": "You are already in your space!",
+  "message.minddomain.not_in_space": "You are not in a space!",
+  "message.minddomain.space_created": "Space created! (%d×%d×%d)",
+  "message.minddomain.enter_failed": "Failed to enter space.",
+  "message.minddomain.create_failed": "Failed to create space.",
+  "message.minddomain.entered_space": "Entered your space.",
+  "message.minddomain.left_space": "Returned to the overworld.",
+  "message.minddomain.invalid_space_ball": "This Space Ball is invalid.",
+  "message.minddomain.level_up": "Space leveled up! Level %d, new size: %d×%d×%d",
+
+  "command.minddomain.info.header": "=== %s's Space Info ===",
+  "command.minddomain.info.size": "  Size: %d×%d×%d",
+  "command.minddomain.info.level": "  Level: %d",
+  "command.minddomain.info.experience": "  Experience: %d/%d",
+  "command.minddomain.info.space_id": "  Space ID: %d",
+  "command.minddomain.info.no_space": "%s does not have a space.",
+  "command.minddomain.info.data_error": "Space data error.",
+  "command.minddomain.visit.no_space": "%s does not have a space.",
+  "command.minddomain.visit.success": "Teleported to %s's space.",
+  "command.minddomain.visit.failed": "Failed to access space.",
+
+  "category.minddomain": "MindDomain",
+  "key.minddomain.enter_space": "Enter Space",
+  "key.minddomain.leave_space": "Leave Space"
+}
