@@ -4,7 +4,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.entity.Entity
+import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.inventory.Inventory
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
@@ -247,6 +249,22 @@ object SpaceSwapManager {
         // 空间:     X [-halfSize, halfSize-1], Z 同理, Y [PLATFORM_Y+1, PLATFORM_Y+verticalSize]
 
         try {
+            // ==================== 预处理阶段：清理状态绑定 ====================
+            // 唤醒两侧区域内所有睡眠实体，防止方块替换导致状态损坏：
+            // - 睡眠实体与床方块通过 occupied 属性双向绑定
+            // - 方块替换时床消失会导致睡眠实体进入无效状态而被引擎移除
+            // - wakeUp() 同时清除实体睡眠状态和床的 occupied=true 属性
+            wakeUpSleepingEntities(
+                realWorld,
+                centerX - halfSize, baseY, centerZ - halfSize,
+                size, verticalSize
+            )
+            wakeUpSleepingEntities(
+                spaceWorld,
+                -halfSize, DynamicWorldManager.PLATFORM_Y + 1, -halfSize,
+                size, verticalSize
+            )
+
             // ==================== 第一阶段：快照 ====================
             // 将两侧所有方块状态和方块实体 NBT 读取到内存数组中，
             // 避免写入过程中读取到已被修改的数据
@@ -365,6 +383,14 @@ object SpaceSwapManager {
      * @param snapshot 要写入的方块快照
      */
     private fun writeBlockSnapshot(world: ServerWorld, pos: BlockPos, snapshot: BlockSnapshot) {
+        // 清空现有方块实体的物品栏，防止 setBlockState 触发
+        // onStateReplaced → ItemScatterer.scatter() 将物品以掉落物形式散落。
+        // 快照已完整保存方块实体的 NBT 数据，散落的掉落物是多余副本，会导致物品复制。
+        val existingBlockEntity = world.getBlockEntity(pos)
+        if (existingBlockEntity is Inventory) {
+            (existingBlockEntity as Inventory).clear()
+        }
+
         // 使用精心选择的标志组合：无掉落、无自检、强制放置、客户端同步
         world.setBlockState(pos, snapshot.blockState, SWAP_SET_BLOCK_FLAGS)
 
@@ -445,14 +471,20 @@ object SpaceSwapManager {
         )
 
         // 收集现实世界中的非玩家实体
-        val realEntities = realWorld.getOtherEntities(null, realBox) { entity ->
-            entity !is PlayerEntity
-        }
+        // 通过 filterOutSubParts 排除多部件实体的子部件（如末影龙的碰撞箱部件），
+        // 避免主体传送后子部件单独传送导致实体重复创建
+        val realEntities = filterOutSubParts(
+            realWorld.getOtherEntities(null, realBox) { entity ->
+                entity !is PlayerEntity
+            }
+        )
 
         // 收集空间中的非玩家实体
-        val spaceEntities = spaceWorld.getOtherEntities(null, spaceBox) { entity ->
-            entity !is PlayerEntity
-        }
+        val spaceEntities = filterOutSubParts(
+            spaceWorld.getOtherEntities(null, spaceBox) { entity ->
+                entity !is PlayerEntity
+            }
+        )
 
         logger.debug(
             "实体交换: 现实世界 {} 个实体, 空间维度 {} 个实体",
@@ -500,5 +532,77 @@ object SpaceSwapManager {
                 TeleportTarget.NO_OP
             )
         )
+    }
+
+    /**
+     * 从实体列表中过滤掉多部件实体的子部件
+     *
+     * 多部件实体（如末影龙）由一个主体和多个子部件实体组成。
+     * 子部件的 [Entity.isPartOf] 方法对其主体实体返回 true（默认实现仅对自身返回 true）。
+     * 传送主体时引擎会自动处理所有子部件，因此子部件不应被单独传送，
+     * 否则会导致实体重复创建。
+     *
+     * 此方法通过交叉检查每个实体的 isPartOf 关系通用地识别并排除子部件，
+     * 适用于原版和模组添加的任何多部件实体。
+     *
+     * @param entities 候选实体列表
+     * @return 过滤掉子部件后的实体列表
+     */
+    private fun filterOutSubParts(entities: List<Entity>): List<Entity> {
+        if (entities.size <= 1) return entities
+
+        val subParts = HashSet<Entity>()
+        for (entity in entities) {
+            for (other in entities) {
+                // isPartOf 默认仅对 self 返回 true；
+                // 多部件子部件重写此方法，对其主体也返回 true
+                if (entity !== other && entity.isPartOf(other)) {
+                    subParts.add(entity)
+                    break
+                }
+            }
+        }
+
+        if (subParts.isNotEmpty()) {
+            logger.debug("过滤了 {} 个多部件实体子部件", subParts.size)
+        }
+
+        return if (subParts.isEmpty()) entities else entities.filter { it !in subParts }
+    }
+
+    /**
+     * 唤醒指定区域内所有睡眠中的实体
+     *
+     * 睡眠实体（如床上的村民）与床方块通过 occupied 属性双向绑定。
+     * 在方块替换之前唤醒它们可同时清除实体的睡眠状态和床的 occupied 属性，
+     * 防止方块替换后实体因失去关联床方块而进入无效状态被引擎移除。
+     *
+     * @param world 目标维度
+     * @param minX 区域最小 X 坐标
+     * @param minY 区域最小 Y 坐标
+     * @param minZ 区域最小 Z 坐标
+     * @param horizontalSize 区域水平边长
+     * @param verticalSize 区域垂直高度
+     */
+    private fun wakeUpSleepingEntities(
+        world: ServerWorld,
+        minX: Int, minY: Int, minZ: Int,
+        horizontalSize: Int, verticalSize: Int
+    ) {
+        val box = Box(
+            minX.toDouble(), minY.toDouble(), minZ.toDouble(),
+            (minX + horizontalSize).toDouble(),
+            (minY + verticalSize).toDouble(),
+            (minZ + horizontalSize).toDouble()
+        )
+        val sleepingEntities = world.getOtherEntities(null, box) {
+            it is LivingEntity && it.isSleeping
+        }
+        for (entity in sleepingEntities) {
+            (entity as LivingEntity).wakeUp()
+        }
+        if (sleepingEntities.isNotEmpty()) {
+            logger.debug("唤醒了 {} 个睡眠中的实体", sleepingEntities.size)
+        }
     }
 }
