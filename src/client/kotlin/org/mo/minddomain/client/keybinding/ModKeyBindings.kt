@@ -14,6 +14,7 @@ import org.lwjgl.glfw.GLFW
  * 默认按键：
  * - I 键：进入个人空间
  * - O 键：离开个人空间
+ * - V 键：空间替换（交换现实世界区域与空间维度区域）
  *
  * 所有按键归属于 "MindDomain" 分类，在按键绑定界面中统一显示。
  *
@@ -51,6 +52,22 @@ object ModKeyBindings {
             "key.minddomain.leave_space",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_O,
+            CATEGORY
+        )
+    )
+
+    /**
+     * 空间替换快捷键（默认 V 键）
+     *
+     * 按下后向服务端发送 SwapSpaceC2SPayload 网络包，
+     * 请求将以玩家为中心的现实世界区域与空间维度可用区域进行双向交换。
+     * 交换后玩家留在现实世界。
+     */
+    val SWAP_SPACE: KeyBinding = KeyBindingHelper.registerKeyBinding(
+        KeyBinding(
+            "key.minddomain.swap_space",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_V,
             CATEGORY
         )
     )

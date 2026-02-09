@@ -8,6 +8,7 @@ import org.mo.minddomain.dimension.ModDimensions
 import org.mo.minddomain.event.ModEvents
 import org.mo.minddomain.item.ModItems
 import org.mo.minddomain.network.ModNetworking
+import org.mo.minddomain.swap.SpaceSwapManager
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -55,6 +56,9 @@ class Minddomain : ModInitializer {
 
         // 7. 注册事件处理
         ModEvents.register()
+
+        // 8. 注册空间替换引擎的 tick 事件（延迟任务调度器）
+        SpaceSwapManager.registerEvents()
 
         logger.info("MindDomain (心灵空间) 初始化完成")
     }

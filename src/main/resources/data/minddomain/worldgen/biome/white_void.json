@@ -5,10 +5,10 @@
   "carvers": [],
   "downfall": 0.0,
   "effects": {
+    "fog_color": "#ffffff",
+    "sky_color": "#ffffff",
     "water_color": "#ffffff",
-    "water_fog_color": "#ffffff",
-    "foliage_color": "#ffffff",
-    "grass_color": "#ffffff"
+    "water_fog_color": "#ffffff"
   },
   "features": [
     [], [], [], [], [], [], [], [], [], [], []

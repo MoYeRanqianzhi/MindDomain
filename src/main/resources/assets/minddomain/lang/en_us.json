@@ -21,6 +21,10 @@
   "message.minddomain.invalid_space_ball": "This Space Ball is invalid.",
   "message.minddomain.level_up": "Space leveled up! Level %d, new size: %d×%d×%d",
 
+  "message.minddomain.swap_not_from_space": "Cannot swap from inside the space!",
+  "message.minddomain.swap_success": "Space swap complete!",
+  "message.minddomain.swap_failed": "Space swap failed.",
+
   "command.minddomain.info.header": "=== %s's Space Info ===",
   "command.minddomain.info.size": "  Size: %d×%d×%d",
   "command.minddomain.info.level": "  Level: %d",
@@ -34,5 +38,6 @@
 
   "category.minddomain": "MindDomain",
   "key.minddomain.enter_space": "Enter Space",
-  "key.minddomain.leave_space": "Leave Space"
+  "key.minddomain.leave_space": "Leave Space",
+  "key.minddomain.swap_space": "Swap Space"
 }

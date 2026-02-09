@@ -24,6 +24,9 @@ import org.mo.minddomain.mixin.ItemEntityAccessor
  * - 玩家死亡：解绑空间并掉落携带空间数据的空间球
  * - 方块破坏保护：阻止任何模式下破坏白色屏障方块
  * - 经验获取：将玩家获得的经验同步计入空间等级系统
+ *
+ * 注意：光照亮度处理（全亮效果）在客户端通过 LightmapTextureManagerMixin 实现，
+ * 不经过服务端事件系统。
  */
 object ModEvents {
 
@@ -155,6 +158,7 @@ object ModEvents {
      *
      * @param player 获取经验的玩家（必须是服务端玩家）
      * @param amount 获取的经验量（正值）
+     * 
      */
     fun onPlayerGainExperience(player: ServerPlayerEntity, amount: Int) {
         val server = (player.entityWorld as ServerWorld).server ?: return

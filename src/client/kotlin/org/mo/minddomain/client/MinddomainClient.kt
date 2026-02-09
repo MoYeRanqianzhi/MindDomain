@@ -11,7 +11,7 @@ import org.mo.minddomain.network.ModNetworking
  * MindDomain 客户端初始化器
  *
  * 负责注册客户端专属内容：
- * - 快捷键绑定（I 进入 / O 离开）
+ * - 快捷键绑定（I 进入 / O 离开 / V 空间替换）
  * - 快捷键按下时发送网络包
  * - 心灵空间维度的天空渲染效果（纯白天空）
  *
@@ -46,7 +46,7 @@ class MinddomainClient : ClientModInitializer {
     /**
      * 处理快捷键输入
      *
-     * 检测 I 键和 O 键是否被按下，发送对应的 C2S 网络包到服务端。
+     * 检测 I 键、O 键和 V 键是否被按下，发送对应的 C2S 网络包到服务端。
      * wasPressed() 会消费按键事件，避免重复触发。
      */
     private fun handleKeyBindings() {
@@ -58,6 +58,11 @@ class MinddomainClient : ClientModInitializer {
         // O 键：离开空间
         while (ModKeyBindings.LEAVE_SPACE.wasPressed()) {
             ClientPlayNetworking.send(ModNetworking.LeaveSpaceC2SPayload())
+        }
+
+        // V 键：空间替换（交换现实世界区域与空间维度区域）
+        while (ModKeyBindings.SWAP_SPACE.wasPressed()) {
+            ClientPlayNetworking.send(ModNetworking.SwapSpaceC2SPayload())
         }
     }
 }

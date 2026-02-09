@@ -18,7 +18,8 @@
     ]
   },
   "mixins": [
-    "minddomain.mixins.json"
+    "minddomain.mixins.json",
+    "minddomain.client.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",

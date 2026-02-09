@@ -21,6 +21,10 @@
   "message.minddomain.invalid_space_ball": "这个空间球已失效。",
   "message.minddomain.level_up": "空间升级了！等级 %d，新大小: %d×%d×%d",
 
+  "message.minddomain.swap_not_from_space": "不能在空间内使用空间替换！",
+  "message.minddomain.swap_success": "空间替换完成！",
+  "message.minddomain.swap_failed": "空间替换失败。",
+
   "command.minddomain.info.header": "=== %s 的空间信息 ===",
   "command.minddomain.info.size": "  大小: %d×%d×%d",
   "command.minddomain.info.level": "  等级: %d",
@@ -34,5 +38,6 @@
 
   "category.minddomain": "心灵空间",
   "key.minddomain.enter_space": "进入空间",
-  "key.minddomain.leave_space": "离开空间"
+  "key.minddomain.leave_space": "离开空间",
+  "key.minddomain.swap_space": "空间替换"
 }

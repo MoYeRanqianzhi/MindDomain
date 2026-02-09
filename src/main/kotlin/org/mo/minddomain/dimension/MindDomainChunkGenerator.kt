@@ -147,9 +147,10 @@ class MindDomainChunkGenerator(
     /**
      * 世界总高度（从 bottomY 到 topY）
      *
-     * 返回 384（标准主世界高度），虚空世界不限制实际生成高度。
+     * 返回 1168（扩展高度，支持垂直上限 1024 的空间），
+     * 维度 min_y = -64，最高 Y = -64 + 1168 = 1104。
      */
-    override fun getWorldHeight(): Int = 384
+    override fun getWorldHeight(): Int = 1168
 
     /**
      * 海平面高度 —— 虚空世界无海平面

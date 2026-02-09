@@ -36,6 +36,7 @@ object ModBlocks {
      * 方块属性：
      * - 硬度 -1.0（生存模式不可破坏，与基岩相同）
      * - 爆炸抗性 3600000（不可被爆炸破坏）
+     * - 光照等级 15（最大亮度，消除边界处的黑色阴影）
      * - 无掉落物
      * - 不可被活塞推动
      * - 不允许生物生成
@@ -50,6 +51,7 @@ object ModBlocks {
             AbstractBlock.Settings.create()
                 .registryKey(WHITE_BARRIER_KEY)
                 .strength(-1.0F, 3600000.0F)
+                .luminance { 15 }
                 .dropsNothing()
                 .pistonBehavior(PistonBehavior.BLOCK)
                 .allowsSpawning { _, _, _, _ -> false }

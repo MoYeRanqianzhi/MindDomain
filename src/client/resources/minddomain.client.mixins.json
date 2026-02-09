@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "org.mo.minddomain.client.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ClientWorldMixin",
+    "FogRendererMixin",
+    "LightmapTextureManagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

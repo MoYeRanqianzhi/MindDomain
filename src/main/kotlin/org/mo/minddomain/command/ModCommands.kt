@@ -27,6 +27,7 @@ import org.mo.minddomain.network.ModNetworking
  * 指令列表：
  * - /md enter       — 进入自己的空间（所有玩家）
  * - /md leave       — 离开空间（所有玩家）
+ * - /md swap        — 空间替换（所有玩家，仅在现实世界可用）
  * - /md info        — 查看自己的空间信息（所有玩家）
  * - /md info <玩家> — 查看指定玩家的空间信息（OP 2级）
  * - /md visit <玩家> — 传送到指定玩家的空间（OP 2级）
@@ -65,6 +66,11 @@ object ModCommands {
                 .then(
                     CommandManager.literal("leave")
                         .executes(::executeLeave)
+                )
+                // /md swap — 空间替换
+                .then(
+                    CommandManager.literal("swap")
+                        .executes(::executeSwap)
                 )
                 // /md info — 查看自己的空间信息
                 // /md info <player> — 查看指定玩家的信息（需要 OP 2级）
@@ -110,6 +116,18 @@ object ModCommands {
     private fun executeLeave(context: CommandContext<ServerCommandSource>): Int {
         val player = context.source.playerOrThrow
         ModNetworking.handleLeaveSpace(player)
+        return 1
+    }
+
+    /**
+     * /md swap — 空间替换
+     *
+     * 复用 ModNetworking 中的空间替换逻辑。
+     * 将以玩家为中心的现实世界区域与空间维度可用区域进行双向交换。
+     */
+    private fun executeSwap(context: CommandContext<ServerCommandSource>): Int {
+        val player = context.source.playerOrThrow
+        ModNetworking.handleSwapSpace(player)
         return 1
     }
 

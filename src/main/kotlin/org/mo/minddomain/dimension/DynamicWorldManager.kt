@@ -244,6 +244,13 @@ object DynamicWorldManager {
      * 1. 更新 SpaceInfo.size 持久化数据
      * 2. 更新物理世界的屏障方块和 WorldBorder
      *
+     * 当空间 size 达到 [SpaceLevelConfig.MAX_VERTICAL_SIZE] 后，
+     * 垂直方向不再增长，水平方向增量从 [SpaceLevelConfig.EXPANSION_PER_LEVEL]
+     * 提升到 [SpaceLevelConfig.EXPANSION_PER_LEVEL_AFTER_CAP] 作为补偿。
+     *
+     * 如果升级跨越了垂直上限（oldSize < MAX_VERTICAL_SIZE 且升级后超出），
+     * 分两段计算增量：上限前的等级用标准增量，上限后的等级用加大增量。
+     *
      * 确保数据和实际边界始终一致，不会出现大小变了但边界没更新的情况。
      *
      * @param server MinecraftServer 实例
@@ -256,7 +263,26 @@ object DynamicWorldManager {
         val info = state.getSpaceInfo(spaceId) ?: return null
 
         val oldSize = info.size
-        val newSize = oldSize + levelsGained * SpaceLevelConfig.EXPANSION_PER_LEVEL
+        val maxV = SpaceLevelConfig.MAX_VERTICAL_SIZE
+
+        // 计算新的 size，处理跨越垂直上限的过渡情况
+        val newSize: Int
+        if (oldSize >= maxV) {
+            // 已经超过垂直上限，全部使用加大增量
+            newSize = oldSize + levelsGained * SpaceLevelConfig.EXPANSION_PER_LEVEL_AFTER_CAP
+        } else {
+            // 计算用标准增量后的 size
+            val sizeAfterNormal = oldSize + levelsGained * SpaceLevelConfig.EXPANSION_PER_LEVEL
+            if (sizeAfterNormal <= maxV) {
+                // 全部在上限之内，使用标准增量
+                newSize = sizeAfterNormal
+            } else {
+                // 跨越上限：先算有多少级在上限之前，剩余级数用加大增量
+                val levelsBeforeCap = (maxV - oldSize) / SpaceLevelConfig.EXPANSION_PER_LEVEL
+                val levelsAfterCap = levelsGained - levelsBeforeCap
+                newSize = maxV + levelsAfterCap * SpaceLevelConfig.EXPANSION_PER_LEVEL_AFTER_CAP
+            }
+        }
 
         // 1. 更新持久化数据中的空间大小
         info.size = newSize
@@ -353,24 +379,28 @@ object DynamicWorldManager {
     /**
      * 根据空间边长计算边界坐标范围
      *
-     * 空间从 PLATFORM_Y 向上延伸 size 格可用高度：
+     * 空间从 PLATFORM_Y 向上延伸，垂直方向使用 [SpaceLevelConfig.getVerticalSize] 限制高度：
      * - 地面在 PLATFORM_Y（屏障），玩家站在 PLATFORM_Y + 1
-     * - 天花板在 PLATFORM_Y + size + 1（屏障）
-     * - 可用高度：PLATFORM_Y+1 到 PLATFORM_Y+size，共 size 格，与 XZ 一致
+     * - 天花板在 PLATFORM_Y + verticalSize + 1（屏障）
+     * - 可用高度：PLATFORM_Y+1 到 PLATFORM_Y+verticalSize，共 verticalSize 格
      * - XZ 以原点为中心，范围为 [-halfSize, halfSize-1]
      *
-     * @param size 空间边长
+     * 当 size 超过 MAX_VERTICAL_SIZE 时，垂直方向固定为 MAX_VERTICAL_SIZE，
+     * 水平方向继续按 size 扩展，空间从正方体变为扁平长方体。
+     *
+     * @param size 空间边长（水平方向）
      * @return 包含 X/Z 范围和顶底 Y 坐标的边界数据
      */
-    private fun calculateBounds(size: Int): SpaceBounds {
+    fun calculateBounds(size: Int): SpaceBounds {
         val halfSize = size / 2
+        val verticalSize = SpaceLevelConfig.getVerticalSize(size)
         return SpaceBounds(
             minX = -halfSize,
             maxX = halfSize - 1,
             minZ = -halfSize,
             maxZ = halfSize - 1,
             bottomY = PLATFORM_Y,
-            topY = PLATFORM_Y + size + 1
+            topY = PLATFORM_Y + verticalSize + 1
         )
     }
 
@@ -386,7 +416,7 @@ object DynamicWorldManager {
  * @param bottomY 地面层 Y 坐标（白色屏障方块）
  * @param topY 天花板层 Y 坐标（白色屏障方块）
  */
-private data class SpaceBounds(
+data class SpaceBounds(
     val minX: Int,
     val maxX: Int,
     val minZ: Int,
