@@ -3,8 +3,11 @@ package org.mo.minddomain.client
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
+import net.minecraft.client.render.entity.EntityRendererFactories
 import org.mo.minddomain.client.keybinding.ModKeyBindings
+import org.mo.minddomain.client.render.SpaceBallEntityRenderer
 import org.mo.minddomain.client.render.WhiteSkyRenderer
+import org.mo.minddomain.entity.ModEntities
 import org.mo.minddomain.network.ModNetworking
 
 /**
@@ -14,6 +17,7 @@ import org.mo.minddomain.network.ModNetworking
  * - 快捷键绑定（I 进入 / O 离开 / V 空间替换）
  * - 快捷键按下时发送网络包
  * - 心灵空间维度的天空渲染效果（纯白天空）
+ * - 空间球实体的自定义渲染器
  *
  * 1.21.11 变更：
  * - DimensionRenderingRegistry 和 DimensionEffects 已移除
@@ -28,7 +32,12 @@ class MinddomainClient : ClientModInitializer {
         // 2. 注册白色天空渲染（通过 WorldRenderEvents.START_MAIN）
         WhiteSkyRenderer.register()
 
-        // 3. 注册客户端 tick 事件（处理按键输入）
+        // 3. 注册空间球实体渲染器
+        EntityRendererFactories.register(ModEntities.SPACE_BALL_ENTITY) { ctx ->
+            SpaceBallEntityRenderer(ctx)
+        }
+
+        // 4. 注册客户端 tick 事件（处理按键输入）
         registerClientTick()
     }
 

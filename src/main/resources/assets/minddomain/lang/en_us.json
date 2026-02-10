@@ -39,5 +39,7 @@
   "category.minddomain": "MindDomain",
   "key.minddomain.enter_space": "Enter Space",
   "key.minddomain.leave_space": "Leave Space",
-  "key.minddomain.swap_space": "Swap Space"
+  "key.minddomain.swap_space": "Swap Space",
+
+  "entity.minddomain.space_ball_entity": "Space Ball"
 }

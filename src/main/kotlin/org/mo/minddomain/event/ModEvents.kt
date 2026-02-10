@@ -13,8 +13,8 @@ import org.mo.minddomain.component.ModComponents
 import org.mo.minddomain.component.SpaceBallData
 import org.mo.minddomain.data.MindDomainState
 import org.mo.minddomain.dimension.DynamicWorldManager
+import org.mo.minddomain.entity.SpaceBallEntity
 import org.mo.minddomain.item.ModItems
-import org.mo.minddomain.mixin.ItemEntityAccessor
 
 /**
  * 事件处理模块
@@ -94,11 +94,9 @@ object ModEvents {
     /**
      * 处理玩家死亡时的空间掉落逻辑
      *
-     * 生成携带空间数据的空间球掉落物，具有特殊属性：
-     * - 永不消失：通过将 itemAge 设为 Integer.MIN_VALUE，
-     *   使其需要超过 34 亿 tick（约 3.4 年连续运行）才会达到消失阈值
-     * - 发光效果：添加 Glowing 标记，使空间球在地面上发出轮廓光，
-     *   便于玩家在复杂地形中找到掉落的空间球
+     * 在死亡位置生成自定义空间球实体（SpaceBallEntity），
+     * 替代普通掉落物，具有浮动动画、粒子效果和右键拾取功能。
+     * 实体无敌且永久存在，不会因时间流逝而消失。
      *
      * @param player 死亡的玩家
      */
@@ -128,18 +126,8 @@ object ModEvents {
             Text.translatable("item.minddomain.space_ball.named", player.name.string)
         )
 
-        // 在死亡位置掉落空间球
-        val itemEntity = player.dropStack(serverWorld, stack)
-
-        // 配置掉落物实体的特殊属性
-        itemEntity?.let {
-            // 永不消失：将 itemAge 设为极小的负数
-            // ItemEntity 在 itemAge >= 6000 时消失，Integer.MIN_VALUE 使其实质永久存在
-            (it as ItemEntityAccessor).setItemAge(Int.MIN_VALUE)
-
-            // 发光效果：使空间球掉落物带有高亮轮廓，易于在地面上发现
-            it.isGlowing = true
-        }
+        // 在死亡位置生成空间球实体（替代普通 ItemEntity 掉落）
+        SpaceBallEntity.spawn(serverWorld, player.x, player.y, player.z, stack)
 
         // 解除玩家与空间的绑定
         state.unbindSpace(player.uuid)

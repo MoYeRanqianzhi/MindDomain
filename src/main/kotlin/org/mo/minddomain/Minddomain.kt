@@ -5,6 +5,7 @@ import org.mo.minddomain.block.ModBlocks
 import org.mo.minddomain.command.ModCommands
 import org.mo.minddomain.component.ModComponents
 import org.mo.minddomain.dimension.ModDimensions
+import org.mo.minddomain.entity.ModEntities
 import org.mo.minddomain.event.ModEvents
 import org.mo.minddomain.item.ModItems
 import org.mo.minddomain.network.ModNetworking
@@ -22,9 +23,10 @@ import org.slf4j.LoggerFactory
  * 2. 方块注册 —— 维度管理器中需要引用方块实例
  * 3. 数据组件（DataComponent）—— 物品依赖组件类型
  * 4. 物品注册 —— 事件处理中需要引用物品实例
- * 5. 网络通信 —— 客户端快捷键和指令系统依赖网络包
- * 6. 指令系统 —— 复用网络模块的逻辑
- * 7. 事件处理 —— 监听死亡、服务器生命周期和方块保护事件
+ * 5. 实体类型注册 —— 死亡事件中需要引用实体类型
+ * 6. 网络通信 —— 客户端快捷键和指令系统依赖网络包
+ * 7. 指令系统 —— 复用网络模块的逻辑
+ * 8. 事件处理 —— 监听死亡、服务器生命周期和方块保护事件
  */
 class Minddomain : ModInitializer {
 
@@ -48,16 +50,19 @@ class Minddomain : ModInitializer {
         // 4. 注册物品
         ModItems.register()
 
-        // 5. 注册网络通信
+        // 5. 注册实体类型
+        ModEntities.register()
+
+        // 6. 注册网络通信
         ModNetworking.register()
 
-        // 6. 注册指令系统
+        // 7. 注册指令系统
         ModCommands.register()
 
-        // 7. 注册事件处理
+        // 8. 注册事件处理
         ModEvents.register()
 
-        // 8. 注册空间替换引擎的 tick 事件（延迟任务调度器）
+        // 9. 注册空间替换引擎的 tick 事件（延迟任务调度器）
         SpaceSwapManager.registerEvents()
 
         logger.info("MindDomain (心灵空间) 初始化完成")

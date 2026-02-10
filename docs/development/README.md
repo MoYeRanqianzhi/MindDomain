@@ -10,6 +10,7 @@
 | `v1.1.0.md` | v1.1.0 — 基础功能实现（空间球、维度创建、等级系统等） |
 | `v1.2.0-SNAPSHOT.md` | v1.2.0-SNAPSHOT — 空间替换、纯白渲染链、高度上限修复等 |
 | `v1.2.1-SNAPSHOT.md` | v1.2.1-SNAPSHOT — 空间替换方块实体/状态绑定/多部件实体修复 |
+| `v1.3.0-SNAPSHOT.md` | v1.3.0-SNAPSHOT — 模组 Logo 更新 & 死亡掉落 3D 空间球实体 |
 
 ### 版本区分规则
 
@@ -44,6 +45,9 @@ src/main/kotlin/org/mo/minddomain/
 │   └── ModCommands.kt                # /md 指令树
 ├── event/
 │   └── ModEvents.kt                  # 服务器生命周期 + 死亡 + 经验获取事件
+├── entity/
+│   ├── ModEntities.kt                # 实体类型注册
+│   └── SpaceBallEntity.kt            # 空间球自定义实体（死亡掉落 3D 球体）
 ├── level/
 │   └── SpaceLevelConfig.kt           # 空间等级系统配置（升级公式、扩展参数）
 ├── swap/
@@ -51,7 +55,6 @@ src/main/kotlin/org/mo/minddomain/
 └── mixin/
     ├── MinecraftServerAccessor.java   # 访问 MinecraftServer 私有字段
     ├── ServerWorldAccessor.java       # 访问 ServerWorld.entityManager
-    ├── ItemEntityAccessor.java        # 访问 ItemEntity.itemAge
     └── PlayerEntityMixin.java         # 注入 addExperience 捕获经验获取
 
 src/client/kotlin/org/mo/minddomain/client/
@@ -59,7 +62,8 @@ src/client/kotlin/org/mo/minddomain/client/
 ├── keybinding/
 │   └── ModKeyBindings.kt             # I/O/V 快捷键绑定
 └── render/
-    └── WhiteSkyRenderer.kt           # 纯白天空渲染
+    ├── WhiteSkyRenderer.kt           # 纯白天空渲染
+    └── SpaceBallEntityRenderer.kt    # 空间球实体 3D 球体渲染器
 
 src/client/java/org/mo/minddomain/client/mixin/
 ├── ClientWorldMixin.java             # 移除方向光照衰减

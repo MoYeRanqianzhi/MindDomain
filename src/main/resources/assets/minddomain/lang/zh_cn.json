@@ -39,5 +39,7 @@
   "category.minddomain": "心灵空间",
   "key.minddomain.enter_space": "进入空间",
   "key.minddomain.leave_space": "离开空间",
-  "key.minddomain.swap_space": "空间替换"
+  "key.minddomain.swap_space": "空间替换",
+
+  "entity.minddomain.space_ball_entity": "空间球"
 }
