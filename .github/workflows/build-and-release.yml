@@ -6,6 +6,7 @@
 #     文件名格式: MindDomain-<version>.jar
 #   - 分支推送: 构建并发布预发布版 Pre-release
 #     文件名格式: MindDomain-<version>+build.<YYYYMMDDHHmmss>.jar
+#   - 手动触发 (workflow_dispatch): 指定 tag 补发历史版本
 # ============================================================================
 
 name: Build & Release
@@ -14,10 +15,17 @@ on:
   push:
     branches: ['**']
     tags: ['v*']
+  # 手动触发，用于补发历史版本
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '要构建并发布的 Tag 名称（例如 v1.2.0-SNAPSHOT）'
+        required: true
+        type: string
 
 # 避免同一分支上的多次推送产生并发构建，取消旧的运行
 concurrency:
-  group: build-${{ github.ref }}
+  group: build-${{ github.event.inputs.tag || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -30,9 +38,11 @@ jobs:
     steps:
       # ===================== 基础环境准备 =====================
 
+      # 手动触发时 checkout 指定 tag，否则 checkout 当前 ref
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
           fetch-depth: 0  # 完整历史，用于生成变更日志
 
       - name: Setup JDK 21
@@ -66,15 +76,18 @@ jobs:
         id: release
         run: |
           SOURCE_JAR="build/libs/MindDomain-${{ steps.mod.outputs.version }}.jar"
+          # 手动触发时从 inputs.tag 取值，否则判断 github.ref
+          INPUT_TAG="${{ github.event.inputs.tag }}"
 
-          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
-            # ---- 正式版：Tag 触发 ----
+          if [[ "${{ github.ref }}" == refs/tags/v* ]] || [[ -n "$INPUT_TAG" ]]; then
+            # ---- 正式版：Tag 推送或手动触发 ----
+            TAG_NAME="${INPUT_TAG:-${{ github.ref_name }}}"
             ARTIFACT_NAME="MindDomain-${{ steps.mod.outputs.version }}.jar"
             cp "$SOURCE_JAR" "$ARTIFACT_NAME"
 
             echo "is_release=true" >> "$GITHUB_OUTPUT"
             echo "artifact_name=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
-            echo "tag_name=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+            echo "tag_name=$TAG_NAME" >> "$GITHUB_OUTPUT"
             echo "release_name=MindDomain ${{ steps.mod.outputs.version }}" >> "$GITHUB_OUTPUT"
             echo "Release type: RELEASE ($ARTIFACT_NAME)"
           else
@@ -97,12 +110,20 @@ jobs:
       - name: Generate changelog
         id: changelog
         run: |
-          # 查找上一个正式版 tag（v* 格式），用于生成变更日志范围
-          LAST_TAG=$(git tag -l 'v*' --sort=-v:refname | head -n1 2>/dev/null || echo "")
+          INPUT_TAG="${{ github.event.inputs.tag }}"
+          IS_TAG_BUILD=false
 
-          # 如果当前就是 tag 触发，则找上上一个 tag
-          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
-            LAST_TAG=$(git tag -l 'v*' --sort=-v:refname | sed -n '2p' 2>/dev/null || echo "")
+          if [[ "${{ github.ref }}" == refs/tags/v* ]] || [[ -n "$INPUT_TAG" ]]; then
+            IS_TAG_BUILD=true
+            CURRENT_TAG="${INPUT_TAG:-${{ github.ref_name }}}"
+          fi
+
+          # 查找上一个正式版 tag（v* 格式），用于生成变更日志范围
+          # 如果是 tag 构建，排除当前 tag 自身
+          if [ "$IS_TAG_BUILD" = true ]; then
+            LAST_TAG=$(git tag -l 'v*' --sort=-v:refname | grep -v "^${CURRENT_TAG}$" | head -n1 2>/dev/null || echo "")
+          else
+            LAST_TAG=$(git tag -l 'v*' --sort=-v:refname | head -n1 2>/dev/null || echo "")
           fi
 
           echo "Last release tag: ${LAST_TAG:-'(none)'}"
