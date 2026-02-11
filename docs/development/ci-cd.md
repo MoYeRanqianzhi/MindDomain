@@ -12,7 +12,7 @@
 | 推送到任意分支 | 预发布版 Pre-release | `MindDomain-<version>+build.<time>.jar` | `MindDomain-1.4.0-SNAPSHOT+build.20260201182405.jar` |
 | 手动触发 (workflow_dispatch) | 正式版 Release | `MindDomain-<version>.jar` | `MindDomain-1.1.0-SNAPSHOT.jar` |
 
-> 时间戳格式为 UTC 时间 `YYYYMMDDHHmmss`，例如 `20260201182405` 表示 2026 年 2 月 1 日 18:24:05 UTC。
+> 时间戳格式为北京时间 (CST, UTC+8) `YYYYMMDDHHmmss`，例如 `20260201182405` 表示 2026 年 2 月 1 日 18:24:05 CST。
 
 ---
 
@@ -20,7 +20,7 @@
 
 ### 1. 自动触发 — 分支推送（预发布版）
 
-每次向任意分支推送提交时自动触发。构建产物以预发布版形式发布到 GitHub Releases，文件名中附带 UTC 时间戳，tag 格式为 `build-<commit-short-sha>`。
+每次向任意分支推送提交时自动触发。构建产物以预发布版形式发布到 GitHub Releases，文件名中附带北京时间戳，tag 格式为 `build-<commit-short-sha>`。
 
 ```yaml
 on:
@@ -179,7 +179,7 @@ concurrency:
 
 **预发布版 Release 内容：**
 - Release 名称：`Pre-release <version>+build.<timestamp>`
-- 包含分支名、完整 commit SHA、UTC 构建时间信息表格
+- 包含分支名、完整 commit SHA、北京时间构建时间信息表格
 - 包含本次提交信息和变更记录
 - 标记为预发布（`prerelease: true`）
 - 不标记为最新版本（`make_latest: false`）
@@ -202,7 +202,7 @@ MindDomain-{mod_version}.jar
 MindDomain-{mod_version}+build.{YYYYMMDDHHmmss}.jar
 ```
 
-`+build.` 后附加 UTC 时间戳，精确到秒。符合 [SemVer 2.0](https://semver.org/) 的构建元数据规范。
+`+build.` 后附加北京时间 (CST, UTC+8) 时间戳，精确到秒。符合 [SemVer 2.0](https://semver.org/) 的构建元数据规范。
 
 ---
 

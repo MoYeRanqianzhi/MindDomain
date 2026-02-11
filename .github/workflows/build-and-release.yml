@@ -92,7 +92,7 @@ jobs:
             echo "Release type: RELEASE ($ARTIFACT_NAME)"
           else
             # ---- 预发布版：普通提交触发 ----
-            TIMESTAMP=$(date -u +%Y%m%d%H%M%S)
+            TIMESTAMP=$(TZ='Asia/Shanghai' date +%Y%m%d%H%M%S)
             SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
             ARTIFACT_NAME="MindDomain-${{ steps.mod.outputs.version }}+build.${TIMESTAMP}.jar"
             cp "$SOURCE_JAR" "$ARTIFACT_NAME"
@@ -195,7 +195,7 @@ jobs:
             |------|-----|
             | **分支** | `${{ github.ref_name }}` |
             | **提交** | `${{ github.sha }}` |
-            | **构建时间 (UTC)** | `${{ steps.release.outputs.timestamp }}` |
+            | **构建时间 (CST)** | `${{ steps.release.outputs.timestamp }}` |
 
             ### 本次提交
 
