@@ -41,8 +41,10 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Setup Gradle
+      - name: Setup Gradle and build
         uses: gradle/actions/setup-gradle@v4
+        with:
+          arguments: build
 
       # ===================== 版本信息提取 =====================
 
@@ -52,11 +54,6 @@ jobs:
           VERSION=$(grep '^mod_version' gradle.properties | cut -d'=' -f2 | tr -d ' ')
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Mod version: $VERSION"
-
-      # ===================== 构建项目 =====================
-
-      - name: Build with Gradle
-        run: ./gradlew build
 
       # ===================== 判断发布类型并准备产物 =====================
 
