@@ -41,10 +41,15 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Setup Gradle and build
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          arguments: build
+          gradle-version: '9.2.1'
+
+      # ===================== 构建项目 =====================
+
+      - name: Build with Gradle
+        run: gradle build
 
       # ===================== 版本信息提取 =====================
 
