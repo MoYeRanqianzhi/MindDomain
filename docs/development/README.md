@@ -11,6 +11,9 @@
 | `v1.2.0-SNAPSHOT.md` | v1.2.0-SNAPSHOT — 空间替换、纯白渲染链、高度上限修复等 |
 | `v1.2.1-SNAPSHOT.md` | v1.2.1-SNAPSHOT — 空间替换方块实体/状态绑定/多部件实体修复 |
 | `v1.3.0-SNAPSHOT.md` | v1.3.0-SNAPSHOT — 模组 Logo 更新 & 死亡掉落 3D 空间球实体 |
+| `v1.4.0-SNAPSHOT.md` | v1.4.0-SNAPSHOT — 成就系统 |
+| `advancements.md` | 成就记录表 — 所有成就的 ID、触发条件、触发位置、技术细节 |
+| `ci-cd.md` | CI/CD 工作流 — 构建与发布工作流的设计、配置细节和使用方法 |
 
 ### 版本区分规则
 
@@ -48,6 +51,8 @@ src/main/kotlin/org/mo/minddomain/
 ├── entity/
 │   ├── ModEntities.kt                # 实体类型注册
 │   └── SpaceBallEntity.kt            # 空间球自定义实体（死亡掉落 3D 球体）
+├── advancement/
+│   └── ModAdvancements.kt            # 成就系统（程序化授予的 Advancements）
 ├── level/
 │   └── SpaceLevelConfig.kt           # 空间等级系统配置（升级公式、扩展参数）
 ├── swap/
