@@ -8,6 +8,7 @@ import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
+import org.mo.minddomain.advancement.ModAdvancements
 import org.mo.minddomain.block.ModBlocks
 import org.mo.minddomain.component.ModComponents
 import org.mo.minddomain.component.SpaceBallData
@@ -168,5 +169,10 @@ object ModEvents {
             ).formatted(Formatting.GREEN),
             false
         )
+
+        // 授予"壶中有日月"成就
+        ModAdvancements.grant(player, ModAdvancements.SUN_MOON_IN_GOURD)
+        // 检查大小里程碑
+        ModAdvancements.checkSizeMilestones(player, newSize)
     }
 }

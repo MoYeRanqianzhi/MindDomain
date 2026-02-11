@@ -12,6 +12,7 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.Formatting
 import net.minecraft.util.Hand
 import net.minecraft.world.World
+import org.mo.minddomain.advancement.ModAdvancements
 import org.mo.minddomain.component.ModComponents
 import org.mo.minddomain.component.SpaceBallData
 import org.mo.minddomain.data.MindDomainState
@@ -115,6 +116,11 @@ class SpaceBallItem(settings: Settings) : Item(settings) {
             true
         )
 
+        // 授予"开窍"成就
+        ModAdvancements.grant(player, ModAdvancements.AWAKENING)
+        // 继承大空间时检查大小里程碑
+        ModAdvancements.checkSizeMilestones(player, spaceInfo.size)
+
         return ActionResult.SUCCESS
     }
 
@@ -123,6 +129,7 @@ class SpaceBallItem(settings: Settings) : Item(settings) {
      *
      * 显示空间球的大小信息，对于死亡掉落的空间球还显示原拥有者名称。
      */
+    @Deprecated("Overrides deprecated member in Item")
     override fun appendTooltip(
         stack: ItemStack,
         context: TooltipContext,

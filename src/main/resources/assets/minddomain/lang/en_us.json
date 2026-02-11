@@ -41,5 +41,18 @@
   "key.minddomain.leave_space": "Leave Space",
   "key.minddomain.swap_space": "Swap Space",
 
-  "entity.minddomain.space_ball_entity": "Space Ball"
+  "entity.minddomain.space_ball_entity": "Space Ball",
+
+  "advancement.minddomain.awakening.title": "Awakening",
+  "advancement.minddomain.awakening.description": "Use a Space Ball to create your own mind domain",
+  "advancement.minddomain.universe_in_sleeve.title": "A Universe Up One's Sleeve",
+  "advancement.minddomain.universe_in_sleeve.description": "Enter your personal space for the first time",
+  "advancement.minddomain.space_beginner.title": "Space Novice",
+  "advancement.minddomain.space_beginner.description": "Perform a space swap for the first time",
+  "advancement.minddomain.sun_moon_in_gourd.title": "Sun & Moon in the Gourd",
+  "advancement.minddomain.sun_moon_in_gourd.description": "Upgrade your space by accumulating experience",
+  "advancement.minddomain.vast_landscape.title": "Vast Landscape Scroll",
+  "advancement.minddomain.vast_landscape.description": "Expand your space to 128 or larger",
+  "advancement.minddomain.supreme_immortal_space.title": "Supreme Immortal Aperture",
+  "advancement.minddomain.supreme_immortal_space.description": "Expand your space to 512 or larger"
 }

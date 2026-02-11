@@ -41,5 +41,18 @@
   "key.minddomain.leave_space": "离开空间",
   "key.minddomain.swap_space": "空间替换",
 
-  "entity.minddomain.space_ball_entity": "空间球"
+  "entity.minddomain.space_ball_entity": "空间球",
+
+  "advancement.minddomain.awakening.title": "开窍",
+  "advancement.minddomain.awakening.description": "使用空间球，开辟属于自己的心灵空间",
+  "advancement.minddomain.universe_in_sleeve.title": "袖里有乾坤",
+  "advancement.minddomain.universe_in_sleeve.description": "首次进入你的个人空间",
+  "advancement.minddomain.space_beginner.title": "空间系初学者",
+  "advancement.minddomain.space_beginner.description": "首次执行空间替换",
+  "advancement.minddomain.sun_moon_in_gourd.title": "壶中有日月",
+  "advancement.minddomain.sun_moon_in_gourd.description": "通过积累经验升级你的空间",
+  "advancement.minddomain.vast_landscape.title": "万里山河图",
+  "advancement.minddomain.vast_landscape.description": "将空间扩展到 128 或更大",
+  "advancement.minddomain.supreme_immortal_space.title": "至尊仙窍",
+  "advancement.minddomain.supreme_immortal_space.description": "将空间扩展到 512 或更大"
 }

@@ -8,6 +8,7 @@ import org.mo.minddomain.dimension.ModDimensions
 import org.mo.minddomain.entity.ModEntities
 import org.mo.minddomain.event.ModEvents
 import org.mo.minddomain.item.ModItems
+import org.mo.minddomain.advancement.ModAdvancements
 import org.mo.minddomain.network.ModNetworking
 import org.mo.minddomain.swap.SpaceSwapManager
 import org.slf4j.Logger
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory
  * 6. 网络通信 —— 客户端快捷键和指令系统依赖网络包
  * 7. 指令系统 —— 复用网络模块的逻辑
  * 8. 事件处理 —— 监听死亡、服务器生命周期和方块保护事件
+ * 9. 成就系统 —— 注册程序化授予的成就模块
  */
 class Minddomain : ModInitializer {
 
@@ -62,7 +64,10 @@ class Minddomain : ModInitializer {
         // 8. 注册事件处理
         ModEvents.register()
 
-        // 9. 注册空间替换引擎的 tick 事件（延迟任务调度器）
+        // 9. 加载成就系统模块
+        ModAdvancements.register()
+
+        // 10. 注册空间替换引擎的 tick 事件（延迟任务调度器）
         SpaceSwapManager.registerEvents()
 
         logger.info("MindDomain (心灵空间) 初始化完成")

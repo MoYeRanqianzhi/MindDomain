@@ -13,6 +13,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.TeleportTarget
+import org.mo.minddomain.advancement.ModAdvancements
 import org.mo.minddomain.data.MindDomainState
 import org.mo.minddomain.data.ReturnPosition
 import org.mo.minddomain.dimension.DynamicWorldManager
@@ -225,6 +226,9 @@ object ModNetworking {
                 .formatted(Formatting.GREEN),
             true
         )
+
+        // 授予"袖里有乾坤"成就
+        ModAdvancements.grant(player, ModAdvancements.UNIVERSE_IN_SLEEVE)
     }
 
     // ==================== 离开空间逻辑 ====================
@@ -439,6 +443,9 @@ object ModNetworking {
                         .formatted(Formatting.GREEN),
                     true
                 )
+
+                // 授予"空间系初学者"成就
+                ModAdvancements.grant(delayedPlayer, ModAdvancements.SPACE_BEGINNER)
             } finally {
                 // 无论成功失败，都释放强制加载的区块
                 SpaceSwapManager.releaseForceLoadedChunks(spaceWorld, forcedChunks)
