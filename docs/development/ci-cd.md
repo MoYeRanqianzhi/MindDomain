@@ -20,7 +20,7 @@
 
 ### 1. 自动触发 — 分支推送（预发布版）
 
-每次向任意分支推送提交时自动触发。构建产物以预发布版形式发布到 GitHub Releases，文件名中附带北京时间戳，tag 格式为 `build-<commit-short-sha>`。
+每次向任意分支推送提交时自动触发。构建产物以预发布版形式发布到 GitHub Releases，文件名中附带北京时间戳，tag 格式为 `build-<YYYYMMDDHHmmss>-<commit-short-sha>`。时间戳前置使 tag 具有自然排序性，较新的构建排在前面。
 
 ```yaml
 on:
@@ -152,7 +152,7 @@ concurrency:
 
 **正式版**产物直接复制为 `MindDomain-<version>.jar`。
 
-**预发布版**产物重命名为 `MindDomain-<version>+build.<YYYYMMDDHHmmss>.jar`，tag 使用 `build-<commit-short-sha>` 格式。
+**预发布版**产物重命名为 `MindDomain-<version>+build.<YYYYMMDDHHmmss>.jar`，tag 使用 `build-<YYYYMMDDHHmmss>-<commit-short-sha>` 格式。
 
 ### Step 5: 生成变更日志
 
@@ -243,9 +243,9 @@ MindDomain-{mod_version}+build.{YYYYMMDDHHmmss}.jar
 
 `workflow_dispatch` 的主要用途是补发历史版本的正式 Release。输入的 tag 名对应一个已有的版本 tag，构建结果应当与自动 tag 触发产生的正式版保持一致。
 
-### Q: 预发布版的 tag 格式为什么用 `build-<sha>` 而不是时间戳？
+### Q: 预发布版的 tag 格式为什么用 `build-<timestamp>-<sha>`？
 
-Git commit SHA 具有唯一性且可追溯到具体提交，而时间戳可能因重新运行而重复。文件名中已包含时间戳用于排序，tag 使用 SHA 用于精确关联代码。
+时间戳前置使 tag 按字典序排列时天然按时间倒序，解决了 GitHub Releases 排序错乱的问题。末尾附加 commit short SHA 保证唯一性且可追溯到具体提交。
 
 ---
 

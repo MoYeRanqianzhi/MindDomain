@@ -99,7 +99,7 @@ jobs:
 
             echo "is_release=false" >> "$GITHUB_OUTPUT"
             echo "artifact_name=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
-            echo "tag_name=build-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+            echo "tag_name=build-${TIMESTAMP}-${SHORT_SHA}" >> "$GITHUB_OUTPUT"
             echo "release_name=Pre-release ${{ steps.mod.outputs.version }}+build.${TIMESTAMP}" >> "$GITHUB_OUTPUT"
             echo "timestamp=$TIMESTAMP" >> "$GITHUB_OUTPUT"
             echo "Release type: PRE-RELEASE ($ARTIFACT_NAME)"
